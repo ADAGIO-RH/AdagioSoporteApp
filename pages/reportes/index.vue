@@ -583,6 +583,7 @@ export default {
 
     async generar() {
       this.selected.sp = this.reporte.sp
+
       this.selected.titulo = this.reporte.titulo
       try {
         const params = JSON.stringify(this.selected)

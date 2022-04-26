@@ -1263,6 +1263,7 @@ export default {
           headers: { id: this.ticket.ticket }, // folio de ticket, ruta carpeta
         })
         this.updateTableFiles()
+        this.modalModificar = false
       } catch (error) {}
     },
     async guardar() {

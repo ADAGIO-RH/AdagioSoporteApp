@@ -471,8 +471,8 @@ export default {
   async asyncData({ $axios }) {
     const datosAdg = {
       usuarioText: localStorage.getItem('name'),
-      usuario: '1',
-      cliente: 76,
+      usuario: localStorage.getItem('id'),
+      cliente: localStorage.getItem('client'),
       correo: localStorage.getItem('email'),
     }
 
@@ -488,32 +488,36 @@ export default {
       selectedFechaIni: null,
       selectedFechaFin: null,
     }
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const token = urlParams.get('token');
-    const name = urlParams.get('name');
-    const email = urlParams.get('email');
-    localStorage.setItem('token', token);
-    localStorage.setItem('name', name);
-    localStorage.setItem('email', email);
-    $axios.defaults.headers.common['token-auth'] = localStorage.getItem('token');
-    const params = JSON.stringify(selected);
+    const queryString = window.location.search
+    const urlParams = new URLSearchParams(queryString)
+    const token = urlParams.get('token')
+    const name = urlParams.get('name')
+    const email = urlParams.get('email')
+    const id = urlParams.get('id')
+    const client = urlParams.get('client')
+    localStorage.setItem('token', token)
+    localStorage.setItem('name', name)
+    localStorage.setItem('email', email)
+    localStorage.setItem('id', id)
+    localStorage.setItem('client', client)
+    $axios.defaults.headers.common['token-auth'] = localStorage.getItem('token')
+    const params = JSON.stringify(selected)
     const testApis = await $axios.$get('/solicitudes/', {
       params,
-    });
+    })
 
     const { list } = testApis
     // delete $axios.defaults.headers.common['token-auth']
     return { list }
   },
   data() {
-    return {  
-      datosAdg : {
-      usuarioText: localStorage.getItem('name'),
-      usuario: '1',
-      cliente: 76,
-      correo: localStorage.getItem('email'),
-    },
+    return {
+      datosAdg: {
+        usuarioText: localStorage.getItem('name'),
+        usuario: localStorage.getItem('id'),
+        cliente: localStorage.getItem('client'),
+        correo: localStorage.getItem('email'),
+      },
       selected: {
         selectedTicket: [],
         selectedUsuario: [],
@@ -601,8 +605,6 @@ export default {
     }
   },
   async mounted() {
-    
-        
     // const { list } = await this.$axios.$get('/clientes/')
     const cliente = await this.$axios.$get('/clientes/')
     const status = await this.$axios.$get('/status/')
@@ -768,6 +770,7 @@ export default {
           headers: { id: this.ticket.ticket }, // folio de ticket, ruta carpeta
         })
         this.updateTableFiles()
+        this.modalModificar = false
       } catch (error) {}
     },
 
@@ -1053,6 +1056,7 @@ export default {
         folio: this.ticket.ticket,
         nombre: this.datosAdg.usuarioText,
       })
+      console.log('Correo enviado')
     },
   },
 }

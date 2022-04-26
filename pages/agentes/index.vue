@@ -148,20 +148,40 @@
                 class="sizeBox"
               />
             </b-form-group>
-            <b-form-group
-              id="fieldset-statusagente"
-              label="Activo"
-              label-for="input-statusagente"
-            >
-              <b-form-checkbox
-                id="checkbox-1"
-                v-model="agente.Activo"
-                name="checkbox-1"
-                :value="parseInt('1', 10)"
-                :unchecked-value="parseInt('0', 10)"
-              >
-              </b-form-checkbox>
-            </b-form-group>
+            <div class="row ustify-content-between">
+              <div class="col-2">
+                <b-form-group
+                  id="fieldset-statusagente"
+                  label="Activo"
+                  label-for="input-statusagente"
+                >
+                  <b-form-checkbox
+                    id="checkbox-1"
+                    v-model="agente.Activo"
+                    name="checkbox-1"
+                    :value="parseInt('1', 10)"
+                    :unchecked-value="parseInt('0', 10)"
+                  >
+                  </b-form-checkbox>
+                </b-form-group>
+              </div>
+              <div class="col-2">
+                <b-form-group
+                  id="fieldset-notiagente"
+                  label="Notificaciones"
+                  label-for="input-notiagente"
+                >
+                  <b-form-checkbox
+                    id="checkbox-2"
+                    v-model="agente.Notificacion"
+                    name="checkbox-2"
+                    :value="parseInt('1', 10)"
+                    :unchecked-value="parseInt('0', 10)"
+                  >
+                  </b-form-checkbox>
+                </b-form-group>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -264,6 +284,12 @@ export default {
         {
           key: 'TEXTOACTIVO',
           label: '¿Activo?',
+          sortable: false,
+          class: 'fontSizeSM',
+        },
+        {
+          key: 'TEXTONOTIFICACION',
+          label: '¿Recibe Notificación?',
           sortable: false,
           class: 'fontSizeSM',
         },
@@ -409,6 +435,7 @@ export default {
         oficina: item.IDOficina,
         especialidad: item.IDEspecialidad,
         Activo: item.Activo,
+        Notificacion: item.Notificacion,
       }
       console.log(this.agente)
 
@@ -429,6 +456,7 @@ export default {
     async guardar() {
       if (this.validarCorreo() && this.validar(this.agente)) {
         await this.$axios.$post('/agentes/', this.agente)
+        console.log('agente', this.agente)
         this.modalVisible = false
         this.update()
       }
