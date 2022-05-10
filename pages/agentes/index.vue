@@ -312,12 +312,16 @@ export default {
     const perfil = localStorage.getItem('perfil')
 
     if (perfil !== '1') {
-      this.$swal.fire({
-        type: 'error',
-        title: 'Oops...',
-        text: 'No tienes permisos para acceder a esta página',
-      })
-      this.$router.push('/')
+      this.$swal
+        .fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'No tienes permisos para acceder a esta página',
+          confirmButtonText: 'OK',
+        })
+        .then(() => {
+          this.$router.push('/')
+        })
     }
 
     listaPerfiles.forEach((element) => {
@@ -454,11 +458,15 @@ export default {
     },
 
     async guardar() {
-      if (this.validarCorreo() && this.validar(this.agente)) {
-        await this.$axios.$post('/agentes/', this.agente)
-        console.log('agente', this.agente)
-        this.modalVisible = false
-        this.update()
+      try {
+        if (this.validarCorreo() && this.validar(this.agente)) {
+          await this.$axios.$post('/agentes/', this.agente)
+          console.log('agente', this.agente)
+          this.modalVisible = false
+          this.update()
+        }
+      } catch (error) {
+        this.$swal.fire('Error', 'No se puede guardar este usuario', 'error')
       }
     },
     cancelar() {
@@ -520,7 +528,7 @@ export default {
     },
     validar(objet) {
       const faltantes = []
-      const nulleable = ['telefono']
+      const nulleable = ['telefono', 'Activo', 'Validar']
       Object.keys(objet).forEach((key) => {
         if (objet[key] === '' || objet[key] === null) {
           if (!nulleable.includes(key)) {

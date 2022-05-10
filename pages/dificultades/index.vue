@@ -121,7 +121,10 @@ export default {
   },
   methods: {
     nueva() {
-      this.dificultad = {}
+      this.dificultad = {
+        CodigoDificultad: '',
+        Descripcion: '',
+      }
       this.modalVisible = true
     },
     modificar({ item }) {
@@ -142,13 +145,39 @@ export default {
         this.$swal.fire('Error', 'No puedes eliminar este registro', 'error')
       }
     },
+
+    validar(objet) {
+      const faltantes = []
+      const nulleable = []
+
+      Object.keys(objet).forEach((key) => {
+        if (objet[key] === '' || objet[key] === null) {
+          if (!nulleable.includes(key)) {
+            faltantes.push(key)
+          }
+        }
+      })
+      if (faltantes.length) {
+        this.$swal.fire(
+          'Faltan datos',
+          'Faltan datos en el formulario ' + faltantes.toString(),
+          'warning'
+        )
+        return false
+      } else {
+        return true
+      }
+    },
+
     async guardar() {
-      try {
-        await this.$axios.$post('/dificultades/', this.dificultad)
-        this.modalVisible = false
-        this.update()
-      } catch (error) {
-        this.$swal.fire('Error', 'Código existente', 'error')
+      if (this.validar(this.dificultad)) {
+        try {
+          await this.$axios.$post('/dificultades/', this.dificultad)
+          this.modalVisible = false
+          this.update()
+        } catch (error) {
+          this.$swal.fire('Error', 'Código existente', 'error')
+        }
       }
     },
     cancelar() {

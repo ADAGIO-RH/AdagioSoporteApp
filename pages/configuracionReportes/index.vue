@@ -186,12 +186,16 @@ export default {
     const perfil = localStorage.getItem('perfil')
 
     if (perfil !== '1') {
-      this.$swal.fire({
-        type: 'error',
-        title: 'Oops...',
-        text: 'No tienes permisos para acceder a esta página',
-      })
-      this.$router.push('/')
+      this.$swal
+        .fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'No tienes permisos para acceder a esta página',
+          confirmButtonText: 'OK',
+        })
+        .then(() => {
+          this.$router.push('/')
+        })
     }
 
     const filtros = await this.$axios.$get('/filtros/')
