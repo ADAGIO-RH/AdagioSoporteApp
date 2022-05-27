@@ -598,7 +598,7 @@ export default {
         await this.$axios({
           url: '/generarReportes/', // File URL Goes Here
           method: 'GET',
-          responseType: 'blob', // blob response
+
           params,
         }).then((res) => {
           const blob = new Blob([this.s2ab(res.data)], {
@@ -625,7 +625,7 @@ export default {
           link.href = url
           link.setAttribute('download', fileName)
           document.body.appendChild(link)
-          console.log(res.data)
+
           link.click()
           link.remove()
           window.URL.revokeObjectURL(url)
@@ -642,6 +642,7 @@ export default {
         )
       }
     },
+
     cancelar() {
       this.modalReporte = false
       this.selected = []
