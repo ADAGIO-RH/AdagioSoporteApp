@@ -171,6 +171,10 @@
               <b-icon icon="list"></b-icon>
             </template>
 
+            <b-dropdown-item @click="confirmarCambioAgente(row)">
+              <b-icon icon="arrow-up"></b-icon> Tomar Ticket
+            </b-dropdown-item>
+
             <b-dropdown-item @click="modificar(row)">
               <b-icon icon="blockquote-right"></b-icon> Modificar
             </b-dropdown-item>
@@ -1213,6 +1217,29 @@ export default {
         window.URL.revokeObjectURL(url)
       })
     },
+
+    modificarAgente({ item }) {
+      this.ticket = {
+        ticket: item.IDTicket,
+        agente: localStorage.getItem('IDAgente'),
+        status: item.IDStatus,
+        usuarioText: item.USUARIO,
+        prioridad: item.IDPrioridad,
+        descripcion: item.Descripcion,
+        descripcionSolucion: item.DescripcionSolucion,
+        dificultad: item.IDDificultad,
+        modulo: item.IDModulo,
+        clienteText: item.CLIENTE,
+        error: item.IDTipoError,
+        duracionAgente: item.DuracionAgente,
+        clasificacion: item.IDClasificacion,
+        fecha: item.FECHA,
+        hora: item.HORA,
+      }
+
+      this.guardar()
+    },
+
     modificar({ item }) {
       this.filesShow = {}
       this.ticket = {
@@ -1301,6 +1328,7 @@ export default {
         }
         this.update()
         this.modalNuevo = false
+        this.enviarCorreo(2)
       }
     },
 
@@ -1321,6 +1349,35 @@ export default {
           }
         })
     },
+
+    enviarCorreo(type) {
+      this.$axios.$post('/nodemailer/', {
+        to: localStorage.getItem('Correo'),
+        type: +type,
+        folio: this.ticket.ticket,
+        nombre: localStorage.getItem('nombre'),
+      })
+      console.log('Correo enviado')
+    },
+
+    confirmarCambioAgente(row) {
+      this.$swal
+        .fire({
+          title: '¿Deseas tomar este ticket?',
+          text: 'Esta acción podria desasignar a otro agente',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Tomar ticket',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.modificarAgente(row)
+          }
+        })
+    },
+
     confirmarEliminarArchivo(row) {
       this.$swal
         .fire({

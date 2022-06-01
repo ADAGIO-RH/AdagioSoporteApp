@@ -94,6 +94,8 @@ export default {
         localStorage.setItem('token', item.token)
         localStorage.setItem('nombre', item.item.Nombre)
         localStorage.setItem('perfil', item.item.IDPerfil)
+        localStorage.setItem('IDAgente', item.item.IDAgente)
+        localStorage.setItem('Correo', item.item.Correo)
 
         this.$router.push({ path: `/solicitudes` })
       } catch (error) {
