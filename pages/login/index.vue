@@ -3,7 +3,11 @@
 
   <div class="row mb-0 login">
     <!-- FORM LOGIN -->
-    <div class="text-center mt-5 mx-5 col" cz-shortcut-listen="true">
+    <div
+      class="text-center mt-5 mx-5 col"
+      cz-shortcut-listen="true"
+      @keyup.enter="validacion"
+    >
       <div class="form-signin mx-5">
         <!-- <img class="mb-4" src="@/src/images/logo.jpg" alt="" width="150" height="150"> -->
 
@@ -47,6 +51,7 @@
           >
             Acceder
           </button>
+
           <div class="col"></div>
         </div>
 
