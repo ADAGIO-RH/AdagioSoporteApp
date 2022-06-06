@@ -469,6 +469,14 @@ export default {
   },
 
   methods: {
+    s2ab(s) {
+      // Cadena a secuencia de caracteres
+      const buf = new ArrayBuffer(s.length)
+      const view = new Uint8Array(buf)
+      for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xff
+      return buf
+    },
+
     uploadFiles(files) {
       const formData = new FormData()
 
@@ -590,12 +598,15 @@ export default {
         await this.$axios({
           url: '/generarReportes/', // File URL Goes Here
           method: 'GET',
-          responseType: 'blob', // blob response
+
           params,
         }).then((res) => {
-          const url = window.URL.createObjectURL(
-            new Blob([res.data], { type: res.data.type })
-          )
+          const blob = new Blob([this.s2ab(res.data)], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          })
+
+          const url = window.URL.createObjectURL(blob)
+
           const link = document.createElement('a')
           const contentDisposition = res.headers['content-disposition']
 
@@ -631,6 +642,7 @@ export default {
         )
       }
     },
+
     cancelar() {
       this.modalReporte = false
       this.selected = []
