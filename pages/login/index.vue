@@ -89,6 +89,8 @@ export default {
     localStorage.removeItem('token')
     localStorage.removeItem('nombre')
     localStorage.removeItem('perfil')
+    localStorage.removeItem('IDAgente')
+    localStorage.removeItem('Correo')
     delete this.$axios.defaults.headers.common['token-auth']
   },
 
