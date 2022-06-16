@@ -464,8 +464,6 @@ export default {
         text: element.Nombre,
       })
     })
-
-    console.log(this.options)
   },
 
   methods: {
@@ -593,6 +591,7 @@ export default {
       this.selected.sp = this.reporte.sp
 
       this.selected.titulo = this.reporte.titulo
+
       try {
         const params = JSON.stringify(this.selected)
         await this.$axios({
@@ -645,7 +644,7 @@ export default {
 
     cancelar() {
       this.modalReporte = false
-      this.selected = []
+      this.selected = {}
       this.update()
     },
 

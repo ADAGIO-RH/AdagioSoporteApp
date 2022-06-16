@@ -804,8 +804,13 @@
       </form>
 
       <footer class="modal-footer">
-        <b-button class="mt-2" variant="primary" @click="guardarNuevo"
-          >Guardar</b-button
+        <b-button
+          :disabled="loading"
+          class="mt-2"
+          variant="primary"
+          @click="guardarNuevo"
+        >
+          Guardar</b-button
         >
         <b-button class="mt-2" variant="danger" @click="cancelarNuevo"
           >Cancelar</b-button
@@ -832,6 +837,7 @@ Vue.use(VueSweetalert2)
 export default {
   name: 'SolicitudesPage',
   layout: 'navFooter',
+
   async asyncData({ $axios }) {
     const selected = {
       selectedTicket: [],
@@ -861,6 +867,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       selected: {
         selectedTicket: [],
         selectedCliente: [],
@@ -1294,16 +1301,20 @@ export default {
       } catch (error) {}
     },
     async guardar() {
-      if (this.validar(this.ticket)) {
-        await this.$axios.$post('/solicitudes/', this.ticket)
-        this.update()
-        if (this.files !== []) {
-          this.uploadFiles(this.files)
-          this.files = []
+      if (this.loading === false) {
+        this.loading = true
+        if (this.validar(this.ticket)) {
+          await this.$axios.$post('/solicitudes/', this.ticket)
+          this.update()
+          if (this.files !== []) {
+            this.uploadFiles(this.files)
+            this.files = []
+          }
+          this.update()
+          this.modalModificar = false
         }
-        this.update()
-        this.modalModificar = false
       }
+      this.loading = false
     },
     cancelar() {
       this.modalModificar = false
@@ -1318,18 +1329,24 @@ export default {
     async guardarNuevo() {
       this.update()
 
-      if (this.validar(this.ticket)) {
-        const resp = await this.$axios.$post('/solicitudes/', this.ticket)
-        const IDTicketNuevo = resp.item[0]?.IDTicketNuevo
-        this.ticket.ticket = IDTicketNuevo
-        if (this.files !== []) {
-          this.uploadFiles(this.files)
-          this.files = []
+      if (this.loading === false) {
+        this.loading = true
+
+        if (this.validar(this.ticket)) {
+          const resp = await this.$axios.$post('/solicitudes/', this.ticket)
+          const IDTicketNuevo = resp.item[0]?.IDTicketNuevo
+          this.ticket.ticket = IDTicketNuevo
+          if (this.files !== []) {
+            this.uploadFiles(this.files)
+            this.files = []
+          }
+
+          this.update()
+          this.modalNuevo = false
+          this.enviarCorreo(2)
         }
-        this.update()
-        this.modalNuevo = false
-        this.enviarCorreo(2)
       }
+      this.loading = false
     },
 
     confirmarEliminar(row) {

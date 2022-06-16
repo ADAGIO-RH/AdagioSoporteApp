@@ -414,6 +414,8 @@ export default {
         oficina: '',
         especialidad: '',
         password: '',
+        Activo: '',
+        Notificacion: '',
       }
       this.modalVisible = true
     },
@@ -441,7 +443,6 @@ export default {
         Activo: item.Activo,
         Notificacion: item.Notificacion,
       }
-      console.log(this.agente)
 
       this.modalVisible = true
     },
@@ -461,7 +462,7 @@ export default {
       try {
         if (this.validarCorreo() && this.validar(this.agente)) {
           await this.$axios.$post('/agentes/', this.agente)
-          console.log('agente', this.agente)
+
           this.modalVisible = false
           this.update()
         }
@@ -479,8 +480,7 @@ export default {
     },
     async guardarNuevo() {
       this.update()
-      console.log('soy ticket viajero')
-      console.log(this.ticket)
+
       if (this.validar(this.ticket)) {
         const resp = await this.$axios.$post('/solicitudes/', this.ticket)
         const IDTicketNuevo = resp.item[0].IDTicketNuevo
@@ -528,7 +528,8 @@ export default {
     },
     validar(objet) {
       const faltantes = []
-      const nulleable = ['telefono', 'Activo', 'Validar']
+      const nulleable = ['telefono', 'Activo', 'Notificacion']
+
       Object.keys(objet).forEach((key) => {
         if (objet[key] === '' || objet[key] === null) {
           if (!nulleable.includes(key)) {
