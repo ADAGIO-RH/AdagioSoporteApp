@@ -398,7 +398,11 @@
         </form>
 
         <footer class="modal-footer">
-          <b-button class="mt-2" variant="primary" @click="guardarNuevo"
+          <b-button
+            :disabled="loading"
+            class="mt-2"
+            variant="primary"
+            @click="guardarNuevo"
             >Guardar</b-button
           >
           <b-button class="mt-2" variant="danger" @click="cancelarNuevo"
@@ -512,6 +516,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       datosAdg: {
         usuarioText: localStorage.getItem('name'),
         usuario: localStorage.getItem('id'),
@@ -958,19 +963,24 @@ export default {
     async guardarNuevo() {
       this.update()
 
-      if (this.validar(this.ticket)) {
-        const resp = await this.$axios.$post('/solicitudes/', this.ticket)
-        const IDTicketNuevo = resp.item[0]?.IDTicketNuevo
-        this.ticket.ticket = IDTicketNuevo
+      if (this.loading === false) {
+        this.loading = true
 
-        if (this.files !== []) {
-          this.uploadFiles(this.files)
-          this.files = []
+        if (this.validar(this.ticket)) {
+          const resp = await this.$axios.$post('/solicitudes/', this.ticket)
+          const IDTicketNuevo = resp.item[0]?.IDTicketNuevo
+          this.ticket.ticket = IDTicketNuevo
+
+          if (this.files !== []) {
+            this.uploadFiles(this.files)
+            this.files = []
+          }
+          this.enviarCorreo(1)
+          this.update()
+          this.modalNuevo = false
         }
-        this.enviarCorreo(1)
-        this.update()
-        this.modalNuevo = false
       }
+      this.loading = false
     },
 
     confirmarEliminar(row) {

@@ -86,6 +86,58 @@
             @keypress="isNumber($event)"
           ></b-form-input>
         </b-form-group>
+
+        <b-form-group
+          id="fieldset-Contrato"
+          label="Contrato Cliente"
+          label-for="input-horassoporte"
+        >
+          <div class="col-13">
+            <b-form-group
+              id="fieldset-adjuntararchivoticket"
+              label-for="input-adjuntararchivoticket"
+            >
+              <b-form-file
+                v-model="files"
+                placeholder="Elige o arrastra tu archivo"
+                drop-placeholder=""
+                multiple
+              ></b-form-file>
+            </b-form-group>
+          </div>
+        </b-form-group>
+        <b-form-group>
+          <b-table
+            hover
+            striped
+            sticky-header="20vh"
+            :items="filesShow"
+            :fields="fieldsFiles"
+            small
+            class="mt-0"
+          >
+            <template #cell(actions)="row">
+              <b-dropdown
+                dropright
+                toggle-class="text-decoration-none"
+                no-caret
+                size="sm"
+                variant="info"
+              >
+                <template #button-content>
+                  <b-icon icon="list"></b-icon>
+                </template>
+
+                <b-dropdown-item @click="descargarArchivo(row)">
+                  <b-icon icon="file-earmark-arrow-down"></b-icon> Descargar
+                </b-dropdown-item>
+                <b-dropdown-item @click="confirmarEliminarArchivo(row)">
+                  <b-icon icon="trash"></b-icon> Eliminar
+                </b-dropdown-item>
+              </b-dropdown>
+            </template>
+          </b-table>
+        </b-form-group>
       </form>
 
       <footer class="modal-footer">
@@ -152,6 +204,17 @@ export default {
           label: 'Horas Soporte',
           sortable: false,
           class: 'fontSizeSM',
+        },
+      ],
+      fieldsFiles: [
+        {
+          key: 'actions',
+          label: '',
+          class: 'actionsStyle',
+        },
+        {
+          key: 'name',
+          label: 'Archivos',
         },
       ],
       modalVisible: false,
